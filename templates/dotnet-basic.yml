@@ -1,0 +1,43 @@
+name: .NET CI/CD
+
+on:
+  push:
+    branches: [ {{branch}} ]
+  pull_request:
+    branches: [ {{branch}} ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: {{dotnetVersion}}
+
+      - run: dotnet restore
+      - run: dotnet build --no-restore --configuration Release
+      - run: dotnet test --no-build --configuration Release
+
+      {{#if publishArtifact}}
+      - name: Publish NuGet Package
+        run: |
+          dotnet pack --configuration Release --output ./nuget-packages
+          dotnet nuget push "./nuget-packages/*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+      {{/if}}
+
+      {{#if_eq branch "main"}}
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-build-{{projectName}}
+          path: |
+            **/bin/Release/
+          retention-days: 30
+      {{/if_eq}}

@@ -101,7 +101,29 @@ function detectStack(dirPath) {
 
   result.suggestedTemplate = suggestTemplate(result);
 
-  return result;
+  const stacks = [];
+
+  if (result.runtime === '.NET Core') stacks.push('.NET Core / C#');
+  if (result.runtime === 'Node.js' || result.runtime === 'TypeScript') stacks.push('Node.js');
+  if (result.runtime === 'Python 3') stacks.push('Python');
+
+  if (result.hasDocker) stacks.push('Docker');
+  if (result.hasTerraform) stacks.push('Terraform');
+
+  if (stacks.length === 0) stacks.push('Unknown');
+
+  const deployTargets = [];
+  if (result.hasDocker) deployTargets.push('Docker');
+
+  const raw = {
+    hasGcpFiles: files.includes('app.yaml')
+  };
+
+  return {
+    stacks,
+    deployTargets,
+    raw
+  };
 }
 
 /**

@@ -2,6 +2,15 @@ const fs = require('fs-extra');
 const path = require('path');
 const Handlebars = require('handlebars');
 
+// Register custom Handlebars helpers
+Handlebars.registerHelper('if_eq', function(a, b, options) {
+  return a === b ? options.fn(this) : options.inverse(this);
+});
+
+Handlebars.registerHelper('if', function(condition, options) {
+  return condition ? options.fn(this) : options.inverse(this);
+});
+
 /**
  * Generate the workflow YAML from answers.
  * Writes to .github/workflows/ci.yml unless dry-run.
@@ -22,13 +31,15 @@ function generate(answers, projectPath, dryRun = false) {
   const compiled = Handlebars.compile(raw);
   const content = compiled(answers);
 
+  const outputDir = path.join(projectPath, '.github', 'workflows');
+  const outputPath = path.join(outputDir, 'ci.yml');
+
   if (!dryRun) {
-    const outputDir = path.join(projectPath, '.github', 'workflows');
     fs.ensureDirSync(outputDir);
-    fs.writeFileSync(path.join(outputDir, 'ci.yml'), content, 'utf8');
+    fs.writeFileSync(outputPath, content, 'utf8');
   }
 
-  return content;
+  return { content, outputPath };
 }
 
 module.exports = { generate };

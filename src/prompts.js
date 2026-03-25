@@ -37,9 +37,45 @@ async function askQuestions(detected, forcedStack) {
     validate: (val) => val.trim().length > 0 || 'Project name cannot be empty',
   });
 
-  // ── GCP-specific questions ─────────────────────────────────────
+  // ── Version selection for basic templates ────────────────────
   const answers = await inquirer.prompt(questions);
   const template = forcedStack || answers.template;
+
+  if (template === 'dotnet-basic') {
+    const dotnetAnswers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'dotnetVersion',
+        message: '.NET version:',
+        default: '8.0',
+      },
+      {
+        type: 'confirm',
+        name: 'publishArtifact',
+        message: 'Publish build artifact (NuGet package)?',
+        default: false,
+      },
+    ]);
+    return { ...answers, template, ...dotnetAnswers };
+  }
+
+  if (template === 'node-basic') {
+    const nodeAnswers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'nodeVersion',
+        message: 'Node.js version:',
+        default: '18',
+      },
+      {
+        type: 'confirm',
+        name: 'publishNpm',
+        message: 'Publish to npm registry?',
+        default: false,
+      },
+    ]);
+    return { ...answers, template, ...nodeAnswers };
+  }
 
   if (template === 'dotnet-gcp') {
     const gcpAnswers = await inquirer.prompt([
