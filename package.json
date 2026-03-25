@@ -13,17 +13,17 @@
   "keywords": ["github-actions", "ci-cd", "scaffold", "devops", "gcp", "dotnet", "node", "terraform", "docker", "workflow", "automation", "deployment", "cli"],
   "author": {
     "name": "Ritik Malhotra",
-    "url": "https://github.com/ritikmalhotra"
+    "url": "https://github.com/RitikMalhotra0709"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ritikmalhotra/gha-scaffold.git"
+    "url": "https://github.com/RitikMalhotra0709/gha-scaffold.git"
   },
   "bugs": {
-    "url": "https://github.com/ritikmalhotra/gha-scaffold/issues"
+    "url": "https://github.com/RitikMalhotra0709/gha-scaffold/issues"
   },
-  "homepage": "https://github.com/ritikmalhotra/gha-scaffold#readme",
+  "homepage": "https://github.com/RitikMalhotra0709/gha-scaffold#readme",
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
