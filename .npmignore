@@ -1,0 +1,15 @@
+test/
+.git/
+.gitignore
+*.md
+!README.md
+.vscode/
+.DS_Store
+node_modules/
+npm-debug.log
+.eslintrc*
+.prettierrc*
+.editorconfig
+*.test.js
+jest.config.js
+coverage/

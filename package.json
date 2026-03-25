@@ -1,7 +1,7 @@
 {
   "name": "gha-scaffold",
   "version": "1.0.0",
-  "description": "Auto-detect your tech stack and generate production-ready GitHub Actions workflows",
+  "description": "Auto-detect your tech stack and generate production-ready GitHub Actions CI/CD workflows in seconds",
   "main": "src/index.js",
   "bin": {
     "gha-scaffold": "./bin/index.js"
@@ -10,9 +10,32 @@
     "test": "jest",
     "start": "node bin/index.js"
   },
-  "keywords": ["github-actions", "ci-cd", "scaffold", "devops", "gcp", "dotnet", "cli"],
-  "author": "Ritik Malhotra",
+  "keywords": ["github-actions", "ci-cd", "scaffold", "devops", "gcp", "dotnet", "node", "terraform", "docker", "workflow", "automation", "deployment", "cli"],
+  "author": {
+    "name": "Ritik Malhotra",
+    "url": "https://github.com/ritikmalhotra"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ritikmalhotra/gha-scaffold.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ritikmalhotra/gha-scaffold/issues"
+  },
+  "homepage": "https://github.com/ritikmalhotra/gha-scaffold#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "preferGlobal": true,
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^11.0.0",
