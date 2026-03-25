@@ -357,7 +357,7 @@ npm test
 
 ## 📄 License
 
-MIT © [Ritik Malhotra](https://github.com/ritikmalhotra)
+MIT © [Ritik Malhotra](https://github.com/RitikMalhotra0709)
 
 ---
 
