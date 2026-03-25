@@ -1,6 +1,6 @@
 {
   "name": "gha-scaffold",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Auto-detect your tech stack and generate production-ready GitHub Actions CI/CD workflows in seconds",
   "main": "src/index.js",
   "bin": {
@@ -10,20 +10,34 @@
     "test": "jest",
     "start": "node bin/index.js"
   },
-  "keywords": ["github-actions", "ci-cd", "scaffold", "devops", "gcp", "dotnet", "node", "terraform", "docker", "workflow", "automation", "deployment", "cli"],
+  "keywords": [
+    "github-actions",
+    "ci-cd",
+    "scaffold",
+    "devops",
+    "gcp",
+    "dotnet",
+    "node",
+    "terraform",
+    "docker",
+    "workflow",
+    "automation",
+    "deployment",
+    "cli"
+  ],
   "author": {
     "name": "Ritik Malhotra",
-    "url": "https://github.com/ritikmalhotra"
+    "url": "https://github.com/RitikMalhotra0709"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ritikmalhotra/gha-scaffold.git"
+    "url": "https://github.com/RitikMalhotra0709/gha-scaffold.git"
   },
   "bugs": {
-    "url": "https://github.com/ritikmalhotra/gha-scaffold/issues"
+    "url": "https://github.com/RitikMalhotra0709/gha-scaffold/issues"
   },
-  "homepage": "https://github.com/ritikmalhotra/gha-scaffold#readme",
+  "homepage": "https://github.com/RitikMalhotra0709/gha-scaffold#readme",
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
