@@ -1,0 +1,99 @@
+name: .NET CI/CD to GCP
+
+on:
+  push:
+    branches: [ {{branch}} ]
+  pull_request:
+    branches: [ {{branch}} ]
+
+env:
+  PROJECT_ID: {{gcpProjectId}}
+  GAR_LOCATION: {{gcpRegion}}
+  REPOSITORY: {{artifactRepo}}
+  IMAGE: {{projectName}}
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/{{branch}}' && github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Build Docker image
+        run: |
+          docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}" .
+
+      - name: Configure Docker to use gcloud as credential helper
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+      - name: Push to Artifact Registry
+        run: |
+          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}"
+
+      {{#if_eq gcpService "cloud-run"}}
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy {{projectName}} \
+            --image "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}" \
+            --region ${{ env.GAR_LOCATION }} \
+            --platform managed \
+            --project ${{ env.PROJECT_ID }} \
+            --allow-unauthenticated
+      {{/if_eq}}
+
+      {{#if_eq gcpService "cloud-functions"}}
+      - name: Deploy to Cloud Functions
+        run: |
+          gcloud functions deploy {{projectName}} \
+            --runtime dotnet7 \
+            --trigger-http \
+            --region ${{ env.GAR_LOCATION }} \
+            --project ${{ env.PROJECT_ID }} \
+            --allow-unauthenticated \
+            --entry-point EntryPoint
+      {{/if_eq}}
+
+      {{#if_eq gcpService "app-engine"}}
+      - name: Deploy to App Engine
+        run: |
+          gcloud app deploy \
+            --region ${{ env.GAR_LOCATION }} \
+            --project ${{ env.PROJECT_ID }} \
+            --quiet
+      {{/if_eq}}

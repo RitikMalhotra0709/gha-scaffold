@@ -1,0 +1,41 @@
+name: Node CI/CD
+
+on:
+  push:
+    branches: [ {{branch}} ]
+  pull_request:
+    branches: [ {{branch}} ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: {{nodeVersion}}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm test
+
+      {{#if publishNpm}}
+      - name: Publish to npm
+        if: github.ref == 'refs/heads/{{branch}}' && github.event_name == 'push'
+        run: |
+          npm set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          npm publish
+      {{/if}}
+
+      {{#if_eq branch "main"}}
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-{{projectName}}
+          path: coverage/
+          retention-days: 30
+      {{/if_eq}}

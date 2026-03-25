@@ -4,7 +4,7 @@ const { program } = require('commander');
 const chalk = require('chalk');
 const ora = require('ora');
 const { detectStack } = require('../src/detector');
-const { generateWorkflow } = require('../src/generator');
+const { generate } = require('../src/generator');
 const { askQuestions } = require('../src/prompts');
 
 console.log(chalk.cyan.bold('\n⚡ gha-scaffold — GitHub Actions Workflow Generator\n'));
@@ -61,7 +61,7 @@ program
 
       // Step 3: generate
       const genSpinner = ora('Generating workflow...').start();
-      const { content, outputPath } = generateWorkflow(detected, answers, options.path, options.dryRun);
+      const { content, outputPath } = generate(answers, options.path, options.dryRun);
       genSpinner.succeed('Workflow generated!');
 
       if (options.dryRun) {
